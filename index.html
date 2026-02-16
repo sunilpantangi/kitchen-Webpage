@@ -8,76 +8,75 @@
     <style>
         :root { --primary: #d97706; --secondary: #991b1b; --bg: #f3f4f6; --text: #1e293b; }
         
-        body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; text-align: center; }
+        body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; }
         
-        header { padding: 1.5rem 1rem; background: white; border-bottom: 4px solid var(--primary); text-align: left; padding-left: 5%; }
-        h1 { font-size: 2rem; margin: 0; color: var(--secondary); text-transform: uppercase; }
+        /* Layout Views */
+        #menu-view, #checkout-view { padding-bottom: 100px; }
+        #checkout-view { display: none; padding: 20px; max-width: 500px; margin: 0 auto; text-align: center; }
+
+        header { padding: 1.5rem 1rem; background: white; border-bottom: 4px solid var(--primary); text-align: left; }
+        h1 { font-size: 1.8rem; margin: 0; color: var(--secondary); text-transform: uppercase; }
         
-        /* THE NEW COMPACT CART (Top Right) */
-        .cart-corner { 
-            position: fixed; 
-            top: 20px; 
-            right: 20px; 
-            width: 150px; /* Approx 3cm */
-            background: white; 
-            padding: 15px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
-            z-index: 2000;
-            border: 2px solid var(--primary);
-        }
-
-        .total-price { font-size: 1.2rem; font-weight: bold; color: var(--secondary); display: block; margin-bottom: 5px; }
-        .item-count { font-size: 0.8rem; color: #64748b; margin-bottom: 10px; display: block; }
-        
-        .wa-mini-btn { 
-            background: #25D366; color: white; padding: 8px; border-radius: 6px; 
-            text-decoration: none; font-weight: bold; display: block; 
-            font-size: 0.75rem; margin-bottom: 10px; text-align: center;
-        }
-
-        /* Menu Layout */
-        .menu-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 20px; 
-            padding: 20px; 
-            max-width: 1000px; 
-            margin: 0 auto; 
-            padding-right: 180px; /* Space so food doesn't go under the cart */
-        }
-
-        @media (max-width: 600px) {
-            .menu-grid { padding-right: 20px; padding-top: 150px; } /* Mobile: Cart sits at top */
-            .cart-corner { width: 90%; right: 5%; left: 5%; top: 100px; }
-        }
-
-        .item-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-align: left; }
-        .item-card img { width: 100%; height: 180px; object-fit: cover; }
-        .item-details { padding: 12px; }
+        /* Menu Items */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; max-width: 1000px; margin: 0 auto; }
+        .item-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .item-card img { width: 100%; height: 200px; object-fit: cover; }
+        .item-details { padding: 15px; }
         .item-name { font-size: 1.1rem; font-weight: bold; margin: 0; color: var(--secondary); }
         .item-desc { font-size: 0.85rem; color: #64748b; font-style: italic; margin: 5px 0; }
         
-        .controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; padding: 5px; background: #f1f5f9; border-radius: 8px; }
-        .btn-qty { background: var(--secondary); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        .controls { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px; padding: 10px; background: #f1f5f9; border-radius: 12px; }
+        .btn-qty { background: var(--secondary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+
+        /* Floating Footer Bar (Phase 1) */
+        #cart-footer { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: var(--secondary); color: white; 
+            padding: 20px; display: none; justify-content: space-between; 
+            align-items: center; z-index: 1000; border-radius: 20px 20px 0 0;
+        }
+        .checkout-btn { background: white; color: var(--secondary); padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; }
+
+        /* Checkout Page Elements (Phase 2) */
+        .summary-box { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .back-btn { background: #64748b; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; cursor: pointer; }
+        .wa-pay-btn { background: #25D366; color: white; padding: 15px; border-radius: 10px; text-decoration: none; display: block; font-weight: bold; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Priya's Kitchen</h1>
-        <p style="margin:0; font-size:0.9rem;">Austrian Home Flavors</p>
-    </header>
+    <div id="menu-view">
+        <header>
+            <h1>Priya's Kitchen</h1>
+            <p style="margin:0; font-size:0.9rem;">Austrian Home Flavors • Homemade with Love</p>
+        </header>
 
-    <div class="cart-corner">
-        <span class="item-count" id="items-count">0 Items</span>
-        <span class="total-price" id="cart-total">€0.00</span>
-        
-        <button class="wa-mini-btn" onclick="sendWhatsApp('UNPAID')">WhatsApp Order</button>
-        <div id="paypal-button-container"></div>
+        <div class="menu-grid" id="menu"></div>
+
+        <div id="cart-footer">
+            <div>
+                <span id="footer-count">0 Items</span> | 
+                <span id="footer-total" style="font-weight:bold; font-size:1.2rem;">€0.00</span>
+            </div>
+            <a href="#" class="checkout-btn" onclick="showCheckout()">Checkout ➔</a>
+        </div>
     </div>
 
-    <div class="menu-grid" id="menu"></div>
+    <div id="checkout-view">
+        <button class="back-btn" onclick="hideCheckout()">← Back to Menu</button>
+        <h2 style="color:var(--secondary)">Complete Your Order</h2>
+        
+        <div class="summary-box" id="order-summary">
+            </div>
+
+        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px;">Choose a payment method to finalize:</p>
+        
+        <div id="paypal-button-container"></div>
+        
+        <div style="margin: 20px 0; color: #94a3b8;">— OR —</div>
+        
+        <button class="wa-pay-btn" onclick="sendWhatsApp('UNPAID')">💬 Order & Pay via WhatsApp</button>
+    </div>
 
     <script>
         const PHONE_NUMBER = "436642174223"; 
@@ -100,7 +99,6 @@
                     <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Food+Image'">
                     <div class="item-details">
                         <p class="item-name">${item.name}</p>
-                        <p class="item-desc">${item.desc}</p>
                         <p style="font-weight:bold; color:var(--primary)">${CURRENCY_SYMBOL}${item.price.toFixed(2)}</p>
                         <div class="controls">
                             <button class="btn-qty" onclick="changeQty(${item.id}, -1)">-</button>
@@ -115,27 +113,49 @@
         function changeQty(id, delta) {
             const currentQty = cart[id] || 0;
             const newQty = Math.max(0, currentQty + delta);
-            if (newQty === 0) delete cart[id];
-            else cart[id] = newQty;
+            if (newQty === 0) delete cart[id]; else cart[id] = newQty;
             document.getElementById(`qty-${id}`).innerText = newQty;
             updateCart();
         }
 
         function updateCart() {
-            let total = 0;
-            let count = 0;
+            let total = 0; let count = 0;
             for (let id in cart) {
                 const item = menuItems.find(i => i.id == id);
                 total += item.price * cart[id];
                 count += cart[id];
             }
-            document.getElementById('cart-total').innerText = `${CURRENCY_SYMBOL}${total.toFixed(2)}`;
-            document.getElementById('items-count').innerText = `${count} Items`;
+            
+            // Show/Hide Footer
+            const footer = document.getElementById('cart-footer');
+            footer.style.display = count > 0 ? 'flex' : 'none';
+            
+            document.getElementById('footer-total').innerText = `${CURRENCY_SYMBOL}${total.toFixed(2)}`;
+            document.getElementById('footer-count').innerText = `${count} Items`;
             return total.toFixed(2);
         }
 
+        function showCheckout() {
+            document.getElementById('menu-view').style.display = 'none';
+            document.getElementById('checkout-view').style.display = 'block';
+            window.scrollTo(0,0);
+            
+            // Generate Summary
+            let summaryHtml = "<h3>Your Order:</h3>";
+            for (let id in cart) {
+                const item = menuItems.find(i => i.id == id);
+                summaryHtml += `<p>• ${item.name} x ${cart[id]} (${CURRENCY_SYMBOL}${(item.price * cart[id]).toFixed(2)})</p>`;
+            }
+            summaryHtml += `<hr><p><strong>Total: ${CURRENCY_SYMBOL}${updateCart()}</strong></p>`;
+            document.getElementById('order-summary').innerHTML = summaryHtml;
+        }
+
+        function hideCheckout() {
+            document.getElementById('menu-view').style.display = 'block';
+            document.getElementById('checkout-view').style.display = 'none';
+        }
+
         function sendWhatsApp(status) {
-            if (Object.keys(cart).length === 0) { alert("Add food first!"); return; }
             let message = `*NEW ORDER - ${status}*%0A%0A`;
             let total = 0;
             for (let id in cart) {
@@ -152,16 +172,11 @@
 
         if (typeof paypal !== 'undefined') {
             paypal.Buttons({
-                style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 35 },
                 createOrder: function(data, actions) {
-                    const total = updateCart();
-                    if (total <= 0) { alert("Select food items first!"); return; }
-                    return actions.order.create({ purchase_units: [{ amount: { currency_code: 'EUR', value: total } }] });
+                    return actions.order.create({ purchase_units: [{ amount: { currency_code: 'EUR', value: updateCart() } }] });
                 },
                 onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        sendWhatsApp('PAID VIA PAYPAL');
-                    });
+                    return actions.order.capture().then(function() { sendWhatsApp('PAID VIA PAYPAL'); });
                 }
             }).render('#paypal-button-container');
         }
