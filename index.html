@@ -7,66 +7,88 @@
     <script src="https://www.paypal.com/sdk/js?client-id=ASk9vWb2IBX0__RTXQyOhdEndrATHw_aUSj83H-LPp5hWSqNUM6vOc1gTyUA1JuFp9tRCyFcNGtNAlBv&currency=EUR"></script>
     <style>
         :root { --primary: #d97706; --secondary: #991b1b; --bg: #f3f4f6; --text: #1e293b; }
-        body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 200px; text-align: center; }
-        header { padding: 2rem 1rem; background: white; border-bottom: 4px solid var(--primary); }
-        h1 { font-size: 2.5rem; margin: 0; color: var(--secondary); text-transform: uppercase; }
         
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
-        .item-card img { width: 100%; height: 220px; object-fit: cover; background: #e5e7eb; }
-        .item-details { padding: 15px; flex-grow: 1; }
-        .item-name { font-size: 1.2rem; font-weight: bold; margin: 0; color: var(--secondary); }
-        .item-desc { font-size: 0.9rem; color: #64748b; font-style: italic; margin: 8px 0; min-height: 40px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; text-align: center; }
         
-        .controls { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px; padding: 10px; background: #f1f5f9; border-radius: 12px; }
-        .btn-qty { background: var(--secondary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
-        .qty-display { font-size: 1.2rem; font-weight: bold; min-width: 20px; }
+        header { padding: 1.5rem 1rem; background: white; border-bottom: 4px solid var(--primary); text-align: left; padding-left: 5%; }
+        h1 { font-size: 2rem; margin: 0; color: var(--secondary); text-transform: uppercase; }
+        
+        /* THE NEW COMPACT CART (Top Right) */
+        .cart-corner { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            width: 150px; /* Approx 3cm */
+            background: white; 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            z-index: 2000;
+            border: 2px solid var(--primary);
+        }
 
-        /* Enhanced Floating Cart Bar */
-        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); border-radius: 25px 25px 0 0; z-index: 1000; }
-        .cart-content { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; }
-        .total-price { font-size: 1.6rem; font-weight: bold; color: var(--secondary); }
+        .total-price { font-size: 1.2rem; font-weight: bold; color: var(--secondary); display: block; margin-bottom: 5px; }
+        .item-count { font-size: 0.8rem; color: #64748b; margin-bottom: 10px; display: block; }
         
-        #paypal-button-container { margin-top: 10px; }
-        .wa-order-btn { background: #25D366; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 5px; display: block; }
+        .wa-mini-btn { 
+            background: #25D366; color: white; padding: 8px; border-radius: 6px; 
+            text-decoration: none; font-weight: bold; display: block; 
+            font-size: 0.75rem; margin-bottom: 10px; text-align: center;
+        }
+
+        /* Menu Layout */
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            padding: 20px; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding-right: 180px; /* Space so food doesn't go under the cart */
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { padding-right: 20px; padding-top: 150px; } /* Mobile: Cart sits at top */
+            .cart-corner { width: 90%; right: 5%; left: 5%; top: 100px; }
+        }
+
+        .item-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-align: left; }
+        .item-card img { width: 100%; height: 180px; object-fit: cover; }
+        .item-details { padding: 12px; }
+        .item-name { font-size: 1.1rem; font-weight: bold; margin: 0; color: var(--secondary); }
+        .item-desc { font-size: 0.85rem; color: #64748b; font-style: italic; margin: 5px 0; }
+        
+        .controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; padding: 5px; background: #f1f5f9; border-radius: 8px; }
+        .btn-qty { background: var(--secondary); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Priya's Kitchen</h1>
-        <p>Austrian Home Kitchen • Delivered with Love</p>
+        <p style="margin:0; font-size:0.9rem;">Austrian Home Flavors</p>
     </header>
 
-    <div class="menu-grid" id="menu"></div>
-
-    <div class="cart-bar">
-        <div class="cart-content">
-            <div class="cart-header">
-                <div>
-                    <span id="items-count" style="color: #64748b;">0 Items</span>
-                    <span class="total-price" id="cart-total">€0.00</span>
-                </div>
-                <div style="font-size: 0.8rem; color: #94a3b8;">Pay with PayPal or WhatsApp</div>
-            </div>
-            
-            <a href="#" class="wa-order-btn" onclick="sendWhatsApp('UNPAID')">💬 Order via WhatsApp (Pay later)</a>
-            
-            <div id="paypal-button-container"></div>
-        </div>
+    <div class="cart-corner">
+        <span class="item-count" id="items-count">0 Items</span>
+        <span class="total-price" id="cart-total">€0.00</span>
+        
+        <button class="wa-mini-btn" onclick="sendWhatsApp('UNPAID')">WhatsApp Order</button>
+        <div id="paypal-button-container"></div>
     </div>
+
+    <div class="menu-grid" id="menu"></div>
 
     <script>
         const PHONE_NUMBER = "436642174223"; 
         const CURRENCY_SYMBOL = "€"; 
 
         const menuItems = [
-            { id: 1, name: "Veg Manchurian Gravy", price: 10.00, img: "manchurian.jpg", desc: "Golden veggie clouds in silky ginger-garlic gravy." },
-            { id: 2, name: "Veg Hakka Noodles", price: 8.50, img: "noodles.jpg", desc: "Wok-tossed with fresh peppers and a smoky touch." },
-            { id: 3, name: "Schezewan Fried Rice", price: 9.50, img: "rice.jpg", desc: "Fire and flavor in every grain with homemade chili oil." },
-            { id: 4, name: "Dhai Vada", price: 7.00, img: "vada.jpg", desc: "Soft 'pillows of joy' in chilled, spiced yogurt." },
-            { id: 5, name: "Veg Dhum Biryani", price: 14.00, img: "biryani.jpg", desc: "Fragrant Basmati slow-cooked with hand-ground spices." }
+            { id: 1, name: "Veg Manchurian Gravy", price: 10.00, img: "manchurian.jpg", desc: "Golden veggie clouds in silky gravy." },
+            { id: 2, name: "Veg Hakka Noodles", price: 8.50, img: "noodles.jpg", desc: "Smoky wok-tossed peppers and noodles." },
+            { id: 3, name: "Schezewan Fried Rice", price: 9.50, img: "rice.jpg", desc: "Spicy fire-tossed rice with chili oil." },
+            { id: 4, name: "Dhai Vada", price: 7.00, img: "vada.jpg", desc: "Soft pillows in chilled spiced yogurt." },
+            { id: 5, name: "Veg Dhum Biryani", price: 14.00, img: "biryani.jpg", desc: "Slow-cooked Basmati with secret spices." }
         ];
 
         let cart = {};
@@ -75,7 +97,7 @@
             const menuDiv = document.getElementById('menu');
             menuDiv.innerHTML = menuItems.map(item => `
                 <div class="item-card">
-                    <img src="${item.img}" alt="${item.name}">
+                    <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Food+Image'">
                     <div class="item-details">
                         <p class="item-name">${item.name}</p>
                         <p class="item-desc">${item.desc}</p>
@@ -113,10 +135,7 @@
         }
 
         function sendWhatsApp(status) {
-            if (Object.keys(cart).length === 0) {
-                alert("Your basket is empty!");
-                return;
-            }
+            if (Object.keys(cart).length === 0) { alert("Add food first!"); return; }
             let message = `*NEW ORDER - ${status}*%0A%0A`;
             let total = 0;
             for (let id in cart) {
@@ -126,28 +145,26 @@
                 message += `• ${item.name} x ${cart[id]} (${CURRENCY_SYMBOL}${lineTotal.toFixed(2)})%0A`;
             }
             message += `%0A*Total: ${CURRENCY_SYMBOL}${total.toFixed(2)}*`;
-            if(status === 'PAID VIA PAYPAL') message += `%0A%0A✅ Payment confirmed in PayPal account.`;
-            
             window.open(`https://wa.me/${PHONE_NUMBER}?text=${message}`, '_blank');
         }
 
-        // --- PAYPAL INTEGRATION ---
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                const total = updateCart();
-                if (total <= 0) { alert("Add items first!"); return; }
-                return actions.order.create({
-                    purchase_units: [{ amount: { currency_code: 'EUR', value: total } }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    sendWhatsApp('PAID VIA PAYPAL');
-                });
-            }
-        }).render('#paypal-button-container');
-
         renderMenu();
+
+        if (typeof paypal !== 'undefined') {
+            paypal.Buttons({
+                style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 35 },
+                createOrder: function(data, actions) {
+                    const total = updateCart();
+                    if (total <= 0) { alert("Select food items first!"); return; }
+                    return actions.order.create({ purchase_units: [{ amount: { currency_code: 'EUR', value: total } }] });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        sendWhatsApp('PAID VIA PAYPAL');
+                    });
+                }
+            }).render('#paypal-button-container');
+        }
     </script>
 </body>
 </html>
