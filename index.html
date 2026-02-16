@@ -3,84 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Priya's Kitchen | Menu</title>
+    <title>Priya's Kitchen | Order Online</title>
     <style>
         :root { --primary: #d97706; --secondary: #991b1b; --bg: #fffcf2; --text: #451a03; }
-        body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 120px; text-align: center; line-height: 1.6; }
-        header { padding: 3rem 1rem; background: white; border-bottom: 4px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        h1 { font-size: 2.8rem; margin: 0; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 120px; text-align: center; }
+        header { padding: 2rem 1rem; background: white; border-bottom: 4px solid var(--primary); }
+        h1 { font-size: 2.5rem; margin: 0; color: var(--secondary); text-transform: uppercase; }
         
         /* Menu Grid */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
-        .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.07); transition: 0.3s; display: flex; flex-direction: column; }
-        .item-card:hover { transform: translateY(-5px); }
-        .item-card img { width: 100%; height: 250px; object-fit: cover; background: #eee; }
-        .item-details { padding: 20px; flex-grow: 1; }
-        .item-name { font-size: 1.3rem; font-weight: bold; margin: 0; color: var(--secondary); }
-        .item-price { font-size: 1rem; color: var(--primary); margin: 5px 0; font-weight: 600; text-transform: uppercase; }
-        .item-desc { font-size: 0.95rem; color: #555; font-style: italic; margin-top: 10px; line-height: 1.4; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
+        .item-card img { width: 100%; height: 220px; object-fit: cover; background: #eee; }
+        .item-details { padding: 15px; flex-grow: 1; }
+        .item-name { font-size: 1.2rem; font-weight: bold; margin: 0; color: var(--secondary); }
+        .item-desc { font-size: 0.9rem; color: #666; font-style: italic; margin: 8px 0; min-height: 40px; }
+        
+        /* Quantity Controls */
+        .controls { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px; padding: 10px; background: #fdf2f2; border-radius: 12px; }
+        .btn-qty { background: var(--secondary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
+        .qty-display { font-size: 1.2rem; font-weight: bold; min-width: 20px; }
 
-        /* WhatsApp Button */
-        .whatsapp-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #25D366; color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4); z-index: 100; }
+        /* Floating Cart Bar */
+        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); display: flex; justify-content: space-around; align-items: center; border-radius: 25px 25px 0 0; z-index: 1000; }
+        .cart-info { text-align: left; }
+        .total-price { font-size: 1.4rem; font-weight: bold; color: var(--secondary); display: block; }
+        .order-btn { background: #25D366; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: 0.2s; }
+        .order-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Priya's Kitchen</h1>
-        <p>Homemade • Authentic • Delivered with Love</p>
+        <p>Freshly Made • Pure Love • Authentic Taste</p>
     </header>
 
-    <div class="menu-grid">
-        <div class="item-card">
-            <img src="ManchurianGravy.JPG" alt="Veg Manchurian Gravy">
-            <div class="item-details">
-                <p class="item-name">Veg Manchurian Gravy</p>
-                <p class="item-price">Specialty</p>
-                <p class="item-desc">"Hand-grated vegetables fried until golden-crisp, soaking in a silky ginger-garlic gravy. A warm hug on a rainy evening."</p>
-            </div>
+    <div class="menu-grid" id="menu">
         </div>
 
-        <div class="item-card">
-            <img src="Noodles.JPG" alt="Veg Hakka Noodles">
-            <div class="item-details">
-                <p class="item-name">Veg Hakka Noodles</p>
-                <p class="item-price">Classic</p>
-                <p class="item-desc">"Wok-tossed on a high flame for that perfect smoky touch, interlaced with crunchy julienned carrots and snap-fresh peppers."</p>
-            </div>
+    <div class="cart-bar">
+        <div class="cart-info">
+            <span id="items-count">0 Items</span>
+            <span class="total-price" id="cart-total">$0.00</span>
         </div>
-
-        <div class="item-card">
-            <img src="Schezewan.JPG" alt="Schezewan Veg Fried Rice">
-            <div class="item-details">
-                <p class="item-name">Schezewan Veg Fried Rice</p>
-                <p class="item-price">Spicy Delight</p>
-                <p class="item-desc">"Bold heat from my homemade chili oil, wok-tossed with spring onions for fire and flavor in every single bite."</p>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <img src="Vada.JPG" alt="Dhai Vada">
-            <div class="item-details">
-                <p class="item-name">Dhai Vada</p>
-                <p class="item-price">Refreshing</p>
-                <p class="item-desc">"Soft 'pillows of joy' drowned in thick, chilled yogurt and topped with secret sweet-tangy chutney. The perfect cooling finish."</p>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <img src="DhumBiryani.JPG" alt="Veg Dhum Biryani">
-            <div class="item-details">
-                <p class="item-name">Veg Dhum Biryani</p>
-                <p class="item-price">Chef's Choice</p>
-                <p class="item-desc">"Fragrant Basmati slow-cooked under a heavy seal to trap the steam and hand-ground spices. This is the heart of my kitchen."</p>
-            </div>
-        </div>
+        <a href="#" class="order-btn" onclick="sendWhatsApp()">🚀 Place Order</a>
     </div>
 
-    <a href="https://wa.me/+436642174223?text=Hi%20Priya!%20I'd%20like%20to%20place%20an%20order%20from%20your%20kitchen." class="whatsapp-btn">
-        💬 Order via WhatsApp
-    </a>
+    <script>
+        // CONFIGURATION: Replace with your details
+        const PHONE_NUMBER = "+436642174233"; // REPLACE WITH YOUR NUMBER (e.g. 91xxxxxxxxxx)
+        const CURRENCY = "$"; 
 
+        const menuItems = [
+            { id: 1, name: "Veg Manchurian Gravy", price: 10.00, img: "manchurian.jpg", desc: "Golden veggie clouds in silky ginger-garlic gravy." },
+            { id: 2, name: "Veg Hakka Noodles", price: 8.50, img: "noodles.jpg", desc: "Wok-tossed with fresh peppers and a smoky touch." },
+            { id: 3, name: "Schezewan Fried Rice", price: 9.00, img: "rice.jpg", desc: "Fire and flavor in every grain with homemade chili oil." },
+            { id: 4, name: "Dhai Vada", price: 6.00, img: "vada.jpg", desc: "Soft 'pillows of joy' in chilled, spiced yogurt." },
+            { id: 5, name: "Veg Dhum Biryani", price: 12.00, img: "biryani.jpg", desc: "Fragrant Basmati slow-cooked with hand-ground spices." }
+        ];
+
+        let cart = {};
+
+        function renderMenu() {
+            const menuDiv = document.getElementById('menu');
+            menuDiv.innerHTML = menuItems.map(item => `
+                <div class="item-card">
+                    <img src="${item.img}" alt="${item.name}">
+                    <div class="item-details">
+                        <p class="item-name">${item.name}</p>
+                        <p class="item-desc">${item.desc}</p>
+                        <p style="font-weight:bold; color:var(--primary)">${CURRENCY}${item.price.toFixed(2)}</p>
+                        <div class="controls">
+                            <button class="btn-qty" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span class="qty-display" id="qty-${item.id}">0</span>
+                            <button class="btn-qty" onclick="changeQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeQty(id, delta) {
+            const currentQty = cart[id] || 0;
+            const newQty = Math.max(0, currentQty + delta);
+            
+            if (newQty === 0) delete cart[id];
+            else cart[id] = newQty;
+
+            document.getElementById(`qty-${id}`).innerText = newQty;
+            updateCart();
+        }
+
+        function updateCart() {
+            let total = 0;
+            let count = 0;
+            for (let id in cart) {
+                const item = menuItems.find(i => i.id == id);
+                total += item.price * cart[id];
+                count += cart[id];
+            }
+            document.getElementById('cart-total').innerText = `${CURRENCY}${total.toFixed(2)}`;
+            document.getElementById('items-count').innerText = `${count} Items`;
+        }
+
+        function sendWhatsApp() {
+            let message = "Hi Priya! I'd like to place an order from your kitchen:%0A%0A";
+            let total = 0;
+            
+            if (Object.keys(cart).length === 0) {
+                alert("Your basket is empty! Add some delicious food first.");
+                return;
+            }
+
+            for (let id in cart) {
+                const item = menuItems.find(i => i.id == id);
+                const lineTotal = item.price * cart[id];
+                total += lineTotal;
+                message += `• *${item.name}* x ${cart[id]} (${CURRENCY}${lineTotal.toFixed(2)})%0A`;
+            }
+
+            message += `%0A*Total Amount: ${CURRENCY}${total.toFixed(2)}*%0A%0APlease confirm my order!`;
+            
+            window.open(`https://wa.me/${PHONE_NUMBER}?text=${message}`, '_blank');
+        }
+
+        renderMenu();
+    </script>
 </body>
 </html>
